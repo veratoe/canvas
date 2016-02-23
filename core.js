@@ -9,7 +9,12 @@ function Vector(x, y) {
 Vector.prototype.add = function (v) {
 	this.x += v.x;
 	this.y += v.y;
-}
+};
+
+Vector.prototype.multiply = function (p) {
+	this.x *= p;
+	this.y *= p;
+};
 
 
 var fillStyle,
@@ -24,7 +29,7 @@ var _draw = function () {
 	context.fill();
 	context.strokeStyle = strokeStyle;
 	context.stroke();
-}
+};
 
 var color = function (r, g, b, a) {
 	if (a) {
@@ -32,18 +37,18 @@ var color = function (r, g, b, a) {
 	} else {
 		return "rgb(" + r + "," + g + "," + b + ")";
 	}
-}
+};
 
 var clear = function () {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	//_draw();
-}
+};
 
 var circle = function (x, y, rx, ry) {
 	context.beginPath();
 	context.arc(x, y, rx, 2 * Math.PI, false);
 	_draw();
-}
+};
 
 var rectangle = function (x, y, l, w, noStroke) {
 	if (noStroke) {
@@ -51,25 +56,25 @@ var rectangle = function (x, y, l, w, noStroke) {
 		return context.fillRect(x, y, l, w);
 	}
 	context.beginPath();
-	context.rect(x, y, l, w)
+	context.rect(x, y, l, w);
 	_draw();
-}
+};
 
 var line = function(x, y, w, z) {
 	context.beginPath();
 	context.moveTo(x, y);
 	context.lineTo(w, z);
 	context.stroke();
-}
+};
 
 var checkBounds = function (v, min, max, wrap) {
 	if (wrap) {
 		return v > max ? min : v < min ? max : v; 
 	} else {
-		return v > max ? max : v < min ? min : v
+		return v > max ? max : v < min ? min : v;
 	}
 
-}
+};
 
 var random = function(a, b, precise) {
 	var r;
@@ -82,13 +87,13 @@ var random = function(a, b, precise) {
 		r = r | 0;
 	}
 	return r;
-}
+};
 
 var _main = function () {
 	if (typeof main === "function") {
 		main();
 	}
-	setTimeout(_main, 60);
-}
+	setTimeout(_main, 0);
+};
 
 _main();

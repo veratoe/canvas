@@ -1,11 +1,12 @@
 function Particle(pos, vel) {
 	
-	var pos, vel;
+	//var pos, vel;
 		
 	this.update = function () {
 		var v = vectors[pos.x/30 >> 0][pos.y/30 >> 0];
 		vel.add(v);
 		pos.add(vel);
+		vel.multiply(0.994);
 		this.checkBounds();
 		return this;	
 	}
