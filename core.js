@@ -1,3 +1,16 @@
+/* field stuff */
+
+function Field(func, tx, ty) {
+
+	this.getVector = function(x,y) {
+		x = tx ? translate(x, tx) : x;
+		y = ty ? translate(y, ty) : y;
+		i = func(x,y);
+		return new Vector(i.x, i.y);
+	};
+
+}
+
 /* vector stuff */
 function Vector(x, y) {
 	this.x = x;
@@ -7,8 +20,8 @@ function Vector(x, y) {
 }
 
 Vector.prototype.add = function (v) {
-	this.x += v.x;
-	this.y += v.y;
+	this.x += v && v.x;
+	this.y += v && v.y;
 };
 
 Vector.prototype.multiply = function (p) {
@@ -16,13 +29,23 @@ Vector.prototype.multiply = function (p) {
 	this.y *= p;
 };
 
+Vector.prototype.length = function () {
+	return Math.sqrt(this.x * this.x + this.y * this.y);
+};
+
+Vector.prototype.normalize = function () {
+	var length = this.length();
+	if (!length)
+			return;
+	this.x /= length;
+	this.y /= length;
+};
 
 var fillStyle,
 	strokeStyle;
 
 var canvas = document.getElementById("canvas"),
 	context = canvas.getContext("2d");
-	context.translate(0.5, 0.5);
 
 var _draw = function () {
 	context.fillStyle = fillStyle;
@@ -32,7 +55,7 @@ var _draw = function () {
 };
 
 var color = function (r, g, b, a) {
-	if (a) {
+	if (a !== undefined) {
 		return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 	} else {
 		return "rgb(" + r + "," + g + "," + b + ")";
@@ -41,7 +64,6 @@ var color = function (r, g, b, a) {
 
 var clear = function () {
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	//_draw();
 };
 
 var circle = function (x, y, rx, ry) {
@@ -64,7 +86,7 @@ var line = function(x, y, w, z) {
 	context.beginPath();
 	context.moveTo(x, y);
 	context.lineTo(w, z);
-	context.stroke();
+	_draw();
 };
 
 var checkBounds = function (v, min, max, wrap) {
@@ -74,6 +96,12 @@ var checkBounds = function (v, min, max, wrap) {
 		return v > max ? max : v < min ? min : v;
 	}
 
+};
+
+var translate = function (a, t) {
+	var oRange = t.oMax - t.oMin,
+		tRange = t.tMax - t.tMin;
+	return (a - t.oMin) / oRange * tRange + t.tMin;
 };
 
 var random = function(a, b, precise) {
