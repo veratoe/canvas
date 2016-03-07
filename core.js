@@ -122,6 +122,18 @@ var line = function(x, y, a, b, w ) {
 	_draw();
 };
 
+var clearImage = function () {
+	for (var i = imageData.data.length; --i>0;) {
+		imageData.data[i] = 255;
+	}
+};
+
+var fadeImage = function (amount) {
+	for (var i = imageData.data.length; i = i -4; i>0) {
+		imageData.data[i + 3] -= amount;
+	}
+};
+
 var checkBounds = function (v, min, max, wrap) {
 	if (wrap) {
 		return v > max ? min : v < min ? max : v; 
@@ -173,6 +185,9 @@ var _init = function () {
 /*	arrayBuffer = new ArrayBuffer(imageData.data.length);
 	buf8 = new Uint8ClampedArray(arrayBuffer);
 	dataBuffer = new Uint32Array(arrayBuffer);*/
+	for (var i = 0; i < imageData.data.length; i++) {
+		imageData.data[i] = 255;
+	}
 };
 
 var _main = function () {
