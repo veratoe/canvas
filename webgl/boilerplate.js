@@ -2,8 +2,8 @@
 // le mansie webgl boilerplate
 
 var canvas = document.querySelector("canvas");
-/*	canvas.width = document.body.clientWidth;
-	canvas.height = document.body.clientWidth;*/
+	canvas.width = window.innerWidth; //document.body.clientWidth;
+	canvas.height = window.innerHeight; //document.body.clientHeight -30;
 var gl = canvas.getContext("webgl");
 
 function compileShader(source, type) {
@@ -13,6 +13,7 @@ function compileShader(source, type) {
 	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 		throw "Could not compile " + type + " shader: " + gl.getShaderInfoLog(shader);
 	}
+	console.log(type + " compiled succesfully");
 	return shader;
 }
 
