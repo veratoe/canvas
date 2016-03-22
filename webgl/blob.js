@@ -34,8 +34,8 @@ var updateParticles = function () {
 			
 			var d = Math.sqrt(dx*dx + dy*dy);
 
-			particles[j*2] += 0.0001 / d * dx * Math.cos(time / 1000);
-			particles[j*2+1] += 0.0001 / d * dy * Math.sin(time / 1000);
+			particles[j*2] += 0.0001 / d * dx;
+			particles[j*2+1] += 0.0001 / d * dy;
 		}
 	}
 };
@@ -61,10 +61,10 @@ var render = function () {
 var frame = 0;
 
 var loop = function () {
-	if (frame % 5 === 0) {
+	//if (frame % 5 === 0) {
 		updateParticles();
 		render();
-	}
+	//}
 	frame++;
 	requestAnimationFrame(loop);
 };

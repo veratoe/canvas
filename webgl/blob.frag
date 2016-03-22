@@ -1,5 +1,5 @@
-#define NUM_PARTICLES 25
-#define COL_STEPS 10
+#define NUM_PARTICLES 40
+#define COL_STEPS 50
 precision mediump float;
 
 uniform vec2 uParticles[NUM_PARTICLES];
@@ -9,11 +9,12 @@ varying vec2 position;
 
 void main() {
 	float r = 0.0;
+	vec2 dst;
 	float d = 0.0;
 	for (int i = 0; i < NUM_PARTICLES;  i++) {
-		d = distance(position, uParticles[i]);
-
-		r += 0.007 / d;
+		dst = position - uParticles[i];
+		d = dot(dst, dst);
+		r += 0.0007 / d;
 	}	
 	r = r * float(COL_STEPS);
 	r = floor(r);
