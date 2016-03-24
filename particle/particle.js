@@ -1,4 +1,4 @@
-var num_particles = 1000,
+var num_particles = 1500,
 	particle_size = 100;
 
 var time = 0;
@@ -21,14 +21,14 @@ var createBlobArray = function (size) {
 		for (var j = 0; j < size; j++) {
 			var x = i - size / 2,
 				y = j - size / 2,
-				d = 1 / (  
-					Math.pow(x, 2) + 
-					Math.pow(y, 2)),
-				r = d / 256 | 0,
-				g = (d - r * 256) | 0;
-				
-				if (d < 0.0005) d = 0.0	;
-			array.push(Math.sqrt(d), 0, 0, 0);
+				r = x * x + y * y;
+				r = Math.sqrt(r);
+				if (r < 1) r = 1;
+
+				var rr = 255 / r | 0;
+				if (rr < 5) rr = 0;
+			
+			array.push(rr, 0, 0, 0);
 		}
 	}
 	console.log(size, array);
@@ -43,7 +43,7 @@ var createTextureFromArray = function (array) {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, particle_size, particle_size, 0, gl.RGBA, gl.FLOAT, new Float32Array(array));
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, particle_size, particle_size, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(array));
 	return texture;
 };
 
