@@ -80,8 +80,6 @@ function createProgramFromAjax(vFileName, fFileName, callback) {
 		fShader = compileShader(source, gl.FRAGMENT_SHADER);
 		onResourcesLoaded();
 	});
-
-
 	
 }
 

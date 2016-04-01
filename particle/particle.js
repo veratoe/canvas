@@ -1,19 +1,11 @@
-var num_particles = 1500,
-	particle_size = 100;
+var num_particles = 500,
+	particle_size = 400;
 
 var time = 0;
 	sTime = Date.now();
 
-var program;
+var program, post_program;
 var vertices;
-
-var createRandomArray = function (length) {
-	var array = [];
-	for (var i = 0; i < length; i++) {
-		array[i] = Math.random()* 256 | 0;	
-	}
-	return array;
-};
 
 var createBlobArray = function (size) {
 	var array = [];
@@ -26,12 +18,10 @@ var createBlobArray = function (size) {
 				if (r < 1) r = 1;
 
 				var rr = 255 / r | 0;
-				if (rr < 5) rr = 0;
 			
 			array.push(rr, 0, 0, 0);
 		}
 	}
-	console.log(size, array);
 	return array;
 };
 
@@ -59,11 +49,9 @@ var updateParticles = function () {
 	for (var i = 0; i < num_particles; i++) {
 		var x = particles[i*2],
 			y = particles[i*2 + 1],
-			//dx = -y * (1 - x - y) + x / 4,
-			//dy = 2 - (x * x) + y / 4;
 			dx = -y,
 			dy = x,
-			m = 0.001;
+			m = 0.01;
 
 
 			
@@ -73,15 +61,16 @@ var updateParticles = function () {
 };
 
 var particleBuffer,
-	particleTexture;
+	particleTexture,
+	framebuffer,
+	framebufferTexture;
 
 var init = function () {
 	gl.enable(gl.BLEND);
 	gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 	gl.depthMask(false);
 	gl.getExtension('OES_texture_float');
-	gl.getExtension('OES_texture_float_linear');
-	
+    gl.getExtension('OES_texture_float_linear');
 	createParticles();
 	particleBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, particleBuffer);
@@ -103,7 +92,42 @@ var render = function () {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(particles), gl.DYNAMIC_DRAW);
 	gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(a_position);
+
+	// draw to frame buffer;
+	var tex = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, tex);
+	gl.texImage2D(gl.TEXTURE_2D, 0, 
+				gl.RGBA, 
+				canvas.width, 
+				canvas.height,
+				0, 
+				gl.RGBA,
+				gl.UNSIGNED_BYTE, 
+				null);
+	
+	var	fb = gl.createFramebuffer();
+	gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+	gl.framebufferTexture2D(gl.FRAMEBUFFER,
+								gl.COLOR_ATTACHMENT0,
+								gl.TEXTURE_2D,
+								tex,
+								0);
+	gl.viewport(0, 0, canvas.width, canvas.height);
 	gl.drawArrays(gl.POINTS, 0, num_particles);
+
+	// en de boel naar schermke
+	gl.bindTexture(gl.TEXTURE_2D, null);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	var vb = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+			1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0
+	]), gl.STATIC_DRAW);
+	gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(0);
+	gl.useProgram(post_program);
+	gl.bindTexture(gl.TEXTURE_2D, tex);
+	gl.drawArrays(gl.TRIANGLES, 0, 6);
 };
 
 
@@ -122,4 +146,8 @@ init();
 createProgramFromAjax("particle.vertex", "particle.frag", function (p) {
 	program = p;
 	loop();
+});
+
+createProgramFromAjax("pp.vertex", "pp.frag", function (p) {
+	post_program = p;
 });
