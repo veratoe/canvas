@@ -1,6 +1,11 @@
 // Thu Mar 10 21:55:32 CET 2016
 // le mansie webgl boilerplate
 
+var mouseX,
+	mouseY,
+	mousePressed,
+	ctrlKey;
+
 var canvas = document.querySelector("canvas");
 	canvas.width = window.innerWidth; //document.body.clientWidth;
 	canvas.height = window.innerHeight; //document.body.clientHeight -30;
@@ -86,3 +91,13 @@ function createProgramFromAjax(vFileName, fFileName, callback) {
 function createProgramFromScripts(vId, fId) {
 	return createProgram(createShaderFromTag(vId), createShaderFromTag(fId));
 }
+
+$("body").on("mousemove mousedown mouseup", function(event) {
+	mouseX = - 2 * (canvas.width / 2 - event.pageX) / canvas.width;
+	mouseY = 2* (canvas.height / 2 - event.pageY) / canvas.height;
+	mousePressed = event.buttons !== 0;
+});
+
+$("body").on("keydown keyup", function (event) {
+	ctrlKey = event.ctrlKey;
+});
