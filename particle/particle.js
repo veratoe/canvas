@@ -1,4 +1,4 @@
-var num_particles = 250,
+var num_particles = 25000,
 	particle_size = 640;
 
 var time = 0;
@@ -58,7 +58,7 @@ var renderToTexture = function () {
 	gl.useProgram(program);
 
 	// texture
-	gl.bindTexture(gl.TEXTURE_2D, particleTexture);
+	//gl.bindTexture(gl.TEXTURE_2D, particleTexture);
 	var a_position = gl.getAttribLocation(program, "a_position");		
 	var u_pointSize = gl.getUniformLocation(program, "u_pointSize");
 	gl.uniform1f(u_pointSize, particle_size);
